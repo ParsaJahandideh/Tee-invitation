@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { overflow-x: hidden; }
   body {
     font-family: 'Vazirmatn', tahoma, sans-serif;
     margin: 0;
@@ -28,7 +29,7 @@
   }
   h1 { font-size: 1.5rem; text-align: center; margin: 0 0 0.5rem; line-height: 1.7; }
   h2 { font-size: 1.2rem; text-align: center; margin: 0 0 1.25rem; }
-  p { line-height: 1.8; text-align: center; }
+  p { line-height: 1.8; text-align: center; margin: 0.5em 0; }
 
   .btn {
     display: inline-block;
@@ -50,7 +51,7 @@
     background: #efebe9;
     color: #6d4c41;
   }
-  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn:disabled { cursor: not-allowed; }
 
   .choice-buttons {
     display: grid;
@@ -174,7 +175,7 @@
       <p style="color: #8d6e63; font-size: 0.9rem;">یه قهوه، یه چای، یه گپ خوب...</p>
       <div class="choice-buttons">
         <button class="btn btn-primary" id="btn-yes">شاید آره</button>
-        <button class="btn btn-secondary" id="btn-no">:( نه</button>
+        <button class="btn btn-secondary" id="btn-no">نه :(</button>
       </div>
     </div>
 
@@ -182,12 +183,12 @@
     <div class="screen" id="screen-no">
       <div style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">💛</div>
       <h2>اشکالی نداره</h2>
-      <p style="color: #8d6e63;">! مرسی که جواب دادی.</p>
+      <p style="color: #8d6e63;">مرسی که جواب دادی!</p>
     </div>
 
     <!-- صفحه ۲: جزئیات -->
     <div class="screen" id="screen-details">
-      <h2>عالیه! چه روزی بهتره؟ </h2>
+      <h2>عالیه! چه روزی بهتره؟</h2>
 
       <div class="step">
         <label class="step-label">چه روزی می‌تونی؟</label>
@@ -263,9 +264,9 @@
 
     <!-- صفحه ۳: موفقیت -->
     <div class="screen" id="screen-success">
-      <div class="success-icon"> </div>
+      <div class="success-icon">💛</div>
       <h2>ممنون از اینکه دعوتم رو قبول کردی!</h2>
-      <p style="color: #8d6e63;"> </p>
+      <p style="color: #8d6e63;">منتظرتم...</p>
     </div>
   </div>
 
@@ -286,11 +287,8 @@
       window.scrollTo(0, 0);
     }
 
-    // صفحه اول: بله / نه
     document.getElementById('btn-yes').addEventListener('click', () => showScreen('screen-details'));
-    document.getElementById('btn-no').addEventListener('click', () => showScreen('screen-no'));
 
-    // انتخاب چیپ‌ها
     function setupChips(containerId, key) {
       const container = document.getElementById(containerId);
       container.addEventListener('click', (e) => {
@@ -305,7 +303,6 @@
     setupChips('dayChips', 'day');
     setupChips('drinkChips', 'drink');
 
-    // صبح / عصر
     document.querySelectorAll('.ampm-toggle button').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.ampm-toggle button').forEach(b => b.classList.remove('active'));
@@ -315,7 +312,6 @@
       });
     });
 
-    // ساعت
     const clock = document.getElementById('clock');
     const hourHand = document.getElementById('hourHand');
     const minuteHand = document.getElementById('minuteHand');
@@ -380,7 +376,6 @@
       const distance = Math.sqrt((e.clientX - cx) ** 2 + (e.clientY - cy) ** 2);
       const clockRadius = rect.width / 2;
 
-      // ناحیه داخلی = عقربه ساعت، ناحیه بیرونی = عقربه دقیقه
       activeHand = distance < clockRadius * 0.55 ? 'hour' : 'minute';
 
       clock.setPointerCapture(e.pointerId);
@@ -399,7 +394,6 @@
 
     updateClock();
 
-    // ثبت نهایی
     document.getElementById('btn-submit').addEventListener('click', () => {
       if (!state.day) { alert('لطفاً یه روز رو انتخاب کن'); return; }
       if (!state.drink) { alert('لطفاً یه نوشیدنی رو انتخاب کن'); return; }
@@ -432,6 +426,87 @@
         btn.disabled = false;
         btn.textContent = 'ثبت کن';
       });
+    });
+
+    // ---------- دکمه فراری «نه» ----------
+    const noBtn = document.getElementById('btn-no');
+    let noBtnIsFloating = false;
+    let lastMoveTime = 0;
+
+    function moveNoButton() {
+      const now = Date.now();
+      if (now - lastMoveTime < 80) return;
+      lastMoveTime = now;
+
+      if (!noBtnIsFloating) {
+        const rect = noBtn.getBoundingClientRect();
+
+        // ساخت placeholder با کلون خود دکمه تا اندازه‌ش دقیقاً یکی باشه
+        const placeholder = noBtn.cloneNode(true);
+        placeholder.removeAttribute('id');
+        placeholder.disabled = true;
+        placeholder.style.visibility = 'hidden';
+        placeholder.style.pointerEvents = 'none';
+        noBtn.parentNode.insertBefore(placeholder, noBtn);
+
+        noBtn.style.position = 'fixed';
+        noBtn.style.left = rect.left + 'px';
+        noBtn.style.top = rect.top + 'px';
+        noBtn.style.width = rect.width + 'px';
+        noBtn.style.height = rect.height + 'px';
+        noBtn.style.margin = '0';
+        noBtn.style.zIndex = '9999';
+        noBtn.style.transition = 'left 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.35s ease';
+        noBtnIsFloating = true;
+      }
+
+      const btnW = noBtn.offsetWidth;
+      const btnH = noBtn.offsetHeight;
+      const padding = 20;
+      const maxX = Math.max(padding, window.innerWidth - btnW - padding);
+      const maxY = Math.max(padding, window.innerHeight - btnH - padding);
+
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      let randomX, randomY, tries = 0;
+      do {
+        randomX = padding + Math.random() * (maxX - padding);
+        randomY = padding + Math.random() * (maxY - padding);
+        tries++;
+      } while (
+        Math.hypot(randomX + btnW / 2 - centerX, randomY + btnH / 2 - centerY) < 120
+        && tries < 10
+      );
+
+      noBtn.style.left = randomX + 'px';
+      noBtn.style.top = randomY + 'px';
+      noBtn.style.transform = `rotate(${(Math.random() - 0.5) * 20}deg)`;
+    }
+
+    noBtn.addEventListener('mouseenter', moveNoButton);
+
+    noBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      moveNoButton();
+    }, { passive: false });
+
+    noBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      moveNoButton();
+    });
+
+    window.addEventListener('resize', () => {
+      if (!noBtnIsFloating) return;
+      const btnW = noBtn.offsetWidth;
+      const btnH = noBtn.offsetHeight;
+      const padding = 20;
+      const maxX = window.innerWidth - btnW - padding;
+      const maxY = window.innerHeight - btnH - padding;
+      const curX = parseFloat(noBtn.style.left);
+      const curY = parseFloat(noBtn.style.top);
+      if (curX > maxX) noBtn.style.left = maxX + 'px';
+      if (curY > maxY) noBtn.style.top = maxY + 'px';
     });
   </script>
 </body>
