@@ -172,23 +172,23 @@
     <div class="screen active" id="screen-invite">
       <div style="font-size: 3rem; text-align: center; margin-bottom: 0.5rem;">☕</div>
       <h1>میتونم به یه نوشیدنی دعوتت کنم؟</h1>
-      <p style="color: #8d6e63; font-size: 0.9rem;">یه قهوه، یه چای، یه گپ خوب...</p>
+      <p style="color: #8d6e63; font-size: 0.9rem;">یه چای شایدم یه قهوه؟...</p>
       <div class="choice-buttons">
-        <button class="btn btn-primary" id="btn-yes">شاید آره</button>
+        <button class="btn btn-primary" id="btn-yes"> آره شاید</button>
         <button class="btn btn-secondary" id="btn-no">نه :(</button>
       </div>
     </div>
 
     <!-- صفحه نه -->
     <div class="screen" id="screen-no">
-      <div style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">💛</div>
+      <div style="font-size: 3rem; text-align: center; margin-bottom: 1rem;"></div>
       <h2>اشکالی نداره</h2>
       <p style="color: #8d6e63;">مرسی که جواب دادی!</p>
     </div>
 
     <!-- صفحه ۲: جزئیات -->
     <div class="screen" id="screen-details">
-      <h2>عالیه! چه روزی بهتره؟</h2>
+      <h2>عالیه! </h2>
 
       <div class="step">
         <label class="step-label">چه روزی می‌تونی؟</label>
@@ -264,9 +264,9 @@
 
     <!-- صفحه ۳: موفقیت -->
     <div class="screen" id="screen-success">
-      <div class="success-icon">💛</div>
+      <div class="success-icon"></div>
       <h2>ممنون از اینکه دعوتم رو قبول کردی!</h2>
-      <p style="color: #8d6e63;">منتظرتم...</p>
+      <p style="color: #8d6e63;"></p>
     </div>
   </div>
 
@@ -424,7 +424,7 @@
         console.error(err);
         alert('خطا در ارسال. لطفاً دوباره تلاش کن.');
         btn.disabled = false;
-        btn.textContent = 'ثبت کن';
+        btn.textContent = 'تایید';
       });
     });
 
