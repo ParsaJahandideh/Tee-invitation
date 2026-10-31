@@ -7,29 +7,28 @@
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { overflow-x: hidden; }
   body {
     font-family: 'Vazirmatn', tahoma, sans-serif;
     margin: 0;
     min-height: 100vh;
-    background: linear-gradient(135deg, #f4f1ea 0%, #e0dccf 100%);
+    background: linear-gradient(135deg, #f4f1ea 0%, #e8e0d5 100%);
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 16px;
-    color: #1f2d3d;
+    color: #4a3b32;
   }
   .card {
-    background: #ffffff;
+    background: #fffdf9;
     padding: 2rem 1.5rem;
     border-radius: 24px;
-    box-shadow: 0 20px 40px rgba(31, 45, 61, 0.12);
+    box-shadow: 0 20px 40px rgba(109, 76, 65, 0.12);
     width: 100%;
     max-width: 440px;
   }
   h1 { font-size: 1.5rem; text-align: center; margin: 0 0 0.5rem; line-height: 1.7; }
   h2 { font-size: 1.2rem; text-align: center; margin: 0 0 1.25rem; }
-  p { line-height: 1.8; text-align: center; margin: 0.5em 0; }
+  p { line-height: 1.8; text-align: center; }
 
   .btn {
     display: inline-block;
@@ -43,15 +42,15 @@
   }
   .btn:active { transform: scale(0.97); }
   .btn-primary {
-    background: linear-gradient(135deg, #3d5a80, #2a3f5c);
+    background: linear-gradient(135deg, #8d6e63, #6d4c41);
     color: #fff;
-    box-shadow: 0 6px 16px rgba(61, 90, 128, 0.3);
+    box-shadow: 0 6px 16px rgba(109, 76, 65, 0.3);
   }
   .btn-secondary {
-    background: #e6ecf0;
-    color: #2a3f5c;
+    background: #efebe9;
+    color: #6d4c41;
   }
-  .btn:disabled { cursor: not-allowed; }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
   .choice-buttons {
     display: grid;
@@ -70,19 +69,19 @@
   }
   .chip {
     padding: 10px 16px;
-    border: 2px solid #c5cfd8;
+    border: 2px solid #d7ccc8;
     background: #fff;
     border-radius: 999px;
     font-family: inherit;
     font-size: 0.95rem;
-    color: #2a3f5c;
+    color: #6d4c41;
     cursor: pointer;
     transition: all 0.15s;
   }
   .chip:active { transform: scale(0.95); }
   .chip.selected {
-    background: #3d5a80;
-    border-color: #3d5a80;
+    background: #8d6e63;
+    border-color: #8d6e63;
     color: #fff;
   }
 
@@ -92,7 +91,7 @@
     font-weight: 700;
     margin-bottom: 0.5rem;
     text-align: center;
-    color: #2a3f5c;
+    color: #6d4c41;
   }
 
   .clock-container {
@@ -106,18 +105,18 @@
     height: 260px;
     touch-action: none;
     user-select: none;
-    filter: drop-shadow(0 8px 20px rgba(31, 45, 61, 0.15));
+    filter: drop-shadow(0 8px 20px rgba(109, 76, 65, 0.15));
   }
   .digital-time {
     font-size: 1.6rem;
     font-weight: 700;
-    color: #1f2d3d;
+    color: #4a3b32;
     font-family: 'Vazirmatn', tahoma, sans-serif;
     letter-spacing: 1px;
   }
   .ampm-toggle {
     display: flex;
-    background: #e6ecf0;
+    background: #efebe9;
     border-radius: 999px;
     padding: 4px;
     gap: 2px;
@@ -129,18 +128,18 @@
     border-radius: 999px;
     font-family: inherit;
     font-size: 0.9rem;
-    color: #3d5a80;
+    color: #8d6e63;
     cursor: pointer;
     transition: all 0.2s;
   }
   .ampm-toggle button.active {
-    background: #3d5a80;
+    background: #8d6e63;
     color: #fff;
   }
 
   .summary {
     text-align: center;
-    color: #3d5a80;
+    color: #8d6e63;
     font-size: 0.9rem;
     min-height: 1.4rem;
     margin-bottom: 1rem;
@@ -172,10 +171,10 @@
     <div class="screen active" id="screen-invite">
       <div style="font-size: 3rem; text-align: center; margin-bottom: 0.5rem;">☕</div>
       <h1>میتونم به یه نوشیدنی دعوتت کنم؟</h1>
-      <p style="color: #3d5a80; font-size: 0.9rem;">یه قهوه، یه چای، یه گپ خوب...</p>
+      <p style="color: #8d6e63; font-size: 0.9rem;">یه قهوه، یه چای، یه گپ خوب...</p>
       <div class="choice-buttons">
         <button class="btn btn-primary" id="btn-yes">شاید آره</button>
-        <button class="btn btn-secondary" id="btn-no">نه :(</button>
+        <button class="btn btn-secondary" id="btn-no">:( نه</button>
       </div>
     </div>
 
@@ -183,12 +182,12 @@
     <div class="screen" id="screen-no">
       <div style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">💛</div>
       <h2>اشکالی نداره</h2>
-      <p style="color: #3d5a80;">مرسی که جواب دادی!</p>
+      <p style="color: #8d6e63;">! مرسی که جواب دادی.</p>
     </div>
 
     <!-- صفحه ۲: جزئیات -->
     <div class="screen" id="screen-details">
-      <h2>عالیه! چه روزی بهتره؟</h2>
+      <h2>عالیه! چه روزی بهتره؟ </h2>
 
       <div class="step">
         <label class="step-label">چه روزی می‌تونی؟</label>
@@ -215,15 +214,15 @@
         <label class="step-label">چه ساعتی؟ (عقربه‌ها رو بکش)</label>
         <div class="clock-container">
           <svg class="clock" id="clock" viewBox="0 0 220 220">
-            <circle cx="110" cy="110" r="105" fill="#ffffff" stroke="#c5cfd8" stroke-width="2"/>
-            <circle cx="110" cy="110" r="65" fill="none" stroke="#f0f3f7" stroke-width="1" stroke-dasharray="3 4"/>
-            <g stroke="#c5cfd8" stroke-width="2">
+            <circle cx="110" cy="110" r="105" fill="#fffdf9" stroke="#d7ccc8" stroke-width="2"/>
+            <circle cx="110" cy="110" r="65" fill="none" stroke="#f4f1ea" stroke-width="1" stroke-dasharray="3 4"/>
+            <g stroke="#d7ccc8" stroke-width="2">
               <line x1="110" y1="10" x2="110" y2="20"/>
               <line x1="210" y1="110" x2="200" y2="110"/>
               <line x1="110" y1="210" x2="110" y2="200"/>
               <line x1="10" y1="110" x2="20" y2="110"/>
             </g>
-            <g font-family="Vazirmatn, tahoma, sans-serif" font-size="14" fill="#3d5a80" text-anchor="middle" dominant-baseline="middle" font-weight="700">
+            <g font-family="Vazirmatn, tahoma, sans-serif" font-size="14" fill="#8d6e63" text-anchor="middle" dominant-baseline="middle" font-weight="700">
               <text x="110" y="32">۱۲</text>
               <text x="149" y="42">۱</text>
               <text x="178" y="71">۲</text>
@@ -238,15 +237,15 @@
               <text x="71" y="42">۱۱</text>
             </g>
             <g id="hourHand">
-              <line x1="110" y1="110" x2="110" y2="55" stroke="#1f2d3d" stroke-width="8" stroke-linecap="round"/>
-              <circle cx="110" cy="55" r="6" fill="#1f2d3d"/>
+              <line x1="110" y1="110" x2="110" y2="55" stroke="#4a3b32" stroke-width="8" stroke-linecap="round"/>
+              <circle cx="110" cy="55" r="6" fill="#4a3b32"/>
             </g>
             <g id="minuteHand">
-              <line x1="110" y1="110" x2="110" y2="30" stroke="#3d5a80" stroke-width="5" stroke-linecap="round"/>
-              <circle cx="110" cy="30" r="5" fill="#3d5a80"/>
+              <line x1="110" y1="110" x2="110" y2="30" stroke="#8d6e63" stroke-width="5" stroke-linecap="round"/>
+              <circle cx="110" cy="30" r="5" fill="#8d6e63"/>
             </g>
-            <circle cx="110" cy="110" r="10" fill="#1f2d3d"/>
-            <circle cx="110" cy="110" r="4" fill="#ffffff"/>
+            <circle cx="110" cy="110" r="10" fill="#4a3b32"/>
+            <circle cx="110" cy="110" r="4" fill="#fffdf9"/>
           </svg>
 
           <div class="digital-time" id="digitalTime">۴:۰۰ عصر</div>
@@ -264,9 +263,9 @@
 
     <!-- صفحه ۳: موفقیت -->
     <div class="screen" id="screen-success">
-      <div class="success-icon">💛</div>
+      <div class="success-icon"> </div>
       <h2>ممنون از اینکه دعوتم رو قبول کردی!</h2>
-      <p style="color: #3d5a80;">منتظرتم...</p>
+      <p style="color: #8d6e63;"> </p>
     </div>
   </div>
 
@@ -287,8 +286,11 @@
       window.scrollTo(0, 0);
     }
 
+    // صفحه اول: بله / نه
     document.getElementById('btn-yes').addEventListener('click', () => showScreen('screen-details'));
+    document.getElementById('btn-no').addEventListener('click', () => showScreen('screen-no'));
 
+    // انتخاب چیپ‌ها
     function setupChips(containerId, key) {
       const container = document.getElementById(containerId);
       container.addEventListener('click', (e) => {
@@ -303,6 +305,7 @@
     setupChips('dayChips', 'day');
     setupChips('drinkChips', 'drink');
 
+    // صبح / عصر
     document.querySelectorAll('.ampm-toggle button').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.ampm-toggle button').forEach(b => b.classList.remove('active'));
@@ -312,6 +315,7 @@
       });
     });
 
+    // ساعت
     const clock = document.getElementById('clock');
     const hourHand = document.getElementById('hourHand');
     const minuteHand = document.getElementById('minuteHand');
@@ -376,6 +380,7 @@
       const distance = Math.sqrt((e.clientX - cx) ** 2 + (e.clientY - cy) ** 2);
       const clockRadius = rect.width / 2;
 
+      // ناحیه داخلی = عقربه ساعت، ناحیه بیرونی = عقربه دقیقه
       activeHand = distance < clockRadius * 0.55 ? 'hour' : 'minute';
 
       clock.setPointerCapture(e.pointerId);
@@ -394,6 +399,7 @@
 
     updateClock();
 
+    // ثبت نهایی
     document.getElementById('btn-submit').addEventListener('click', () => {
       if (!state.day) { alert('لطفاً یه روز رو انتخاب کن'); return; }
       if (!state.drink) { alert('لطفاً یه نوشیدنی رو انتخاب کن'); return; }
@@ -426,86 +432,6 @@
         btn.disabled = false;
         btn.textContent = 'ثبت کن';
       });
-    });
-
-    // ---------- دکمه فراری «نه» ----------
-    const noBtn = document.getElementById('btn-no');
-    let noBtnIsFloating = false;
-    let lastMoveTime = 0;
-
-    function moveNoButton() {
-      const now = Date.now();
-      if (now - lastMoveTime < 80) return;
-      lastMoveTime = now;
-
-      if (!noBtnIsFloating) {
-        const rect = noBtn.getBoundingClientRect();
-
-        const placeholder = noBtn.cloneNode(true);
-        placeholder.removeAttribute('id');
-        placeholder.disabled = true;
-        placeholder.style.visibility = 'hidden';
-        placeholder.style.pointerEvents = 'none';
-        noBtn.parentNode.insertBefore(placeholder, noBtn);
-
-        noBtn.style.position = 'fixed';
-        noBtn.style.left = rect.left + 'px';
-        noBtn.style.top = rect.top + 'px';
-        noBtn.style.width = rect.width + 'px';
-        noBtn.style.height = rect.height + 'px';
-        noBtn.style.margin = '0';
-        noBtn.style.zIndex = '9999';
-        noBtn.style.transition = 'left 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.35s ease';
-        noBtnIsFloating = true;
-      }
-
-      const btnW = noBtn.offsetWidth;
-      const btnH = noBtn.offsetHeight;
-      const padding = 20;
-      const maxX = Math.max(padding, window.innerWidth - btnW - padding);
-      const maxY = Math.max(padding, window.innerHeight - btnH - padding);
-
-      const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
-      let randomX, randomY, tries = 0;
-      do {
-        randomX = padding + Math.random() * (maxX - padding);
-        randomY = padding + Math.random() * (maxY - padding);
-        tries++;
-      } while (
-        Math.hypot(randomX + btnW / 2 - centerX, randomY + btnH / 2 - centerY) < 120
-        && tries < 10
-      );
-
-      noBtn.style.left = randomX + 'px';
-      noBtn.style.top = randomY + 'px';
-      noBtn.style.transform = `rotate(${(Math.random() - 0.5) * 20}deg)`;
-    }
-
-    noBtn.addEventListener('mouseenter', moveNoButton);
-
-    noBtn.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      moveNoButton();
-    }, { passive: false });
-
-    noBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      moveNoButton();
-    });
-
-    window.addEventListener('resize', () => {
-      if (!noBtnIsFloating) return;
-      const btnW = noBtn.offsetWidth;
-      const btnH = noBtn.offsetHeight;
-      const padding = 20;
-      const maxX = window.innerWidth - btnW - padding;
-      const maxY = window.innerHeight - btnH - padding;
-      const curX = parseFloat(noBtn.style.left);
-      const curY = parseFloat(noBtn.style.top);
-      if (curX > maxX) noBtn.style.left = maxX + 'px';
-      if (curY > maxY) noBtn.style.top = maxY + 'px';
     });
   </script>
 </body>
