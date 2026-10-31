@@ -174,7 +174,7 @@
       <p style="color: #8d6e63; font-size: 0.9rem;">یه قهوه، یه چای، یه گپ خوب...</p>
       <div class="choice-buttons">
         <button class="btn btn-primary" id="btn-yes">شاید آره</button>
-        <button class="btn btn-secondary" id="btn-no"> نه :(</button>
+        <button class="btn btn-secondary" id="btn-no">نه :(</button>
       </div>
     </div>
 
@@ -182,12 +182,12 @@
     <div class="screen" id="screen-no">
       <div style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">💛</div>
       <h2>اشکالی نداره</h2>
-      <p style="color: #8d6e63;">! مرسی که جواب دادی.</p>
+      <p style="color: #8d6e63;">مرسی که جواب دادی!</p>
     </div>
 
     <!-- صفحه ۲: جزئیات -->
     <div class="screen" id="screen-details">
-      <h2>عالیه! چه روزی بهتره؟ </h2>
+      <h2>عالیه! چه روزی بهتره؟</h2>
 
       <div class="step">
         <label class="step-label">چه روزی می‌تونی؟</label>
@@ -263,9 +263,9 @@
 
     <!-- صفحه ۳: موفقیت -->
     <div class="screen" id="screen-success">
-      <div class="success-icon"> </div>
+      <div class="success-icon">💛</div>
       <h2>ممنون از اینکه دعوتم رو قبول کردی!</h2>
-      <p style="color: #8d6e63;"> </p>
+      <p style="color: #8d6e63;">منتظرتم...</p>
     </div>
   </div>
 
@@ -286,9 +286,8 @@
       window.scrollTo(0, 0);
     }
 
-    // صفحه اول: بله / نه
+    // صفحه اول: فقط دکمه «آره» فعاله
     document.getElementById('btn-yes').addEventListener('click', () => showScreen('screen-details'));
-    document.getElementById('btn-no').addEventListener('click', () => showScreen('screen-no'));
 
     // انتخاب چیپ‌ها
     function setupChips(containerId, key) {
@@ -434,106 +433,100 @@
       });
     });
 
+    // ---------- دکمه فراری «نه» ----------
+    const noBtn = document.getElementById('btn-no');
+    let noBtnIsFloating = false;
+    let noMoveCount = 0;
+    let lastMoveTime = 0;
+    let cheatMessage = null;
 
+    function moveNoButton() {
+      const now = Date.now();
+      if (now - lastMoveTime < 80) return; // ضد فلیکر
+      lastMoveTime = now;
+      noMoveCount++;
 
-   // ---------- دکمه فراری «نه» ----------
-const noBtn = document.getElementById('btn-no');
-let noBtnIsFloating = false;
-let noMoveCount = 0;
-let lastMoveTime = 0;
-let cheatMessage = null;
+      // اولین بار: دکمه رو از گرید جدا کن و به صفحه بچسبون
+      if (!noBtnIsFloating) {
+        const rect = noBtn.getBoundingClientRect();
 
-function moveNoButton() {
-  const now = Date.now();
-  if (now - lastMoveTime < 80) return; // ضد فلیکر
-  lastMoveTime = now;
-  noMoveCount++;
+        const placeholder = document.createElement('div');
+        placeholder.style.width = rect.width + 'px';
+        placeholder.style.height = rect.height + 'px';
+        noBtn.parentNode.insertBefore(placeholder, noBtn);
 
-  // اولین بار: دکمه رو از گرید جدا کن و به صفحه بچسبون
-  if (!noBtnIsFloating) {
-    const rect = noBtn.getBoundingClientRect();
+        noBtn.style.position = 'fixed';
+        noBtn.style.left = rect.left + 'px';
+        noBtn.style.top = rect.top + 'px';
+        noBtn.style.width = rect.width + 'px';
+        noBtn.style.height = rect.height + 'px';
+        noBtn.style.margin = '0';
+        noBtn.style.zIndex = '9999';
+        noBtn.style.transition = 'left 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.35s ease';
+        noBtnIsFloating = true;
+      }
 
-    const placeholder = document.createElement('div');
-    placeholder.style.width = rect.width + 'px';
-    placeholder.style.height = rect.height + 'px';
-    noBtn.parentNode.insertBefore(placeholder, noBtn);
+      const btnW = noBtn.offsetWidth;
+      const btnH = noBtn.offsetHeight;
+      const padding = 20;
+      const maxX = Math.max(padding, window.innerWidth - btnW - padding);
+      const maxY = Math.max(padding, window.innerHeight - btnH - padding);
 
-    noBtn.style.position = 'fixed';
-    noBtn.style.left = rect.left + 'px';
-    noBtn.style.top = rect.top + 'px';
-    noBtn.style.width = rect.width + 'px';
-    noBtn.style.height = rect.height + 'px';
-    noBtn.style.margin = '0';
-    noBtn.style.zIndex = '9999';
-    noBtn.style.transition = 'left 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.35s ease';
-    noBtnIsFloating = true;
-  }
+      // یه نقطه تصادفی که از وسط صفحه (دکمه آره) دور باشه
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      let randomX, randomY, tries = 0;
+      do {
+        randomX = padding + Math.random() * (maxX - padding);
+        randomY = padding + Math.random() * (maxY - padding);
+        tries++;
+      } while (
+        Math.hypot(randomX + btnW / 2 - centerX, randomY + btnH / 2 - centerY) < 120
+        && tries < 10
+      );
 
-  const btnW = noBtn.offsetWidth;
-  const btnH = noBtn.offsetHeight;
-  const padding = 20;
-  const maxX = Math.max(padding, window.innerWidth - btnW - padding);
-  const maxY = Math.max(padding, window.innerHeight - btnH - padding);
+      noBtn.style.left = randomX + 'px';
+      noBtn.style.top = randomY + 'px';
+      noBtn.style.transform = `rotate(${(Math.random() - 0.5) * 20}deg)`;
 
-  // یه نقطه تصادفی که از دکمه «آره» (وسط صفحه) دور باشه
-  const centerX = window.innerWidth / 2;
-  const centerY = window.innerHeight / 2;
-  let randomX, randomY, tries = 0;
-  do {
-    randomX = padding + Math.random() * (maxX - padding);
-    randomY = padding + Math.random() * (maxY - padding);
-    tries++;
-  } while (
-    Math.hypot(randomX + btnW / 2 - centerX, randomY + btnH / 2 - centerY) < 120
-    && tries < 10
-  );
+      // بعد از ۳ بار فرار، یه پیام بامزه نشون بده
+      if (noMoveCount === 3 && !cheatMessage) {
+        cheatMessage = document.createElement('p');
+        cheatMessage.style.cssText = 'text-align:center; color:#8d6e63; font-size:0.85rem; margin-top:1rem; animation: fadeIn 0.4s ease;';
+        cheatMessage.textContent = 'فکرش رو نکن، فقط «آره» کار می‌کنه 😄';
+        noBtn.parentNode.appendChild(cheatMessage);
+      }
+    }
 
-  noBtn.style.left = randomX + 'px';
-  noBtn.style.top = randomY + 'px';
-  noBtn.style.transform = `rotate(${(Math.random() - 0.5) * 20}deg)`;
+    // با موس
+    noBtn.addEventListener('mouseenter', moveNoButton);
 
-  // بعد از چند بار فرار، یه پیام بامزه نشون بده (اختیاری)
-  if (noMoveCount === 3 && !cheatMessage) {
-    cheatMessage = document.createElement('p');
-    cheatMessage.style.cssText = 'text-align:center; color:#8d6e63; font-size:0.85rem; margin-top:1rem; animation: fadeIn 0.4s ease;';
-    cheatMessage.textContent = ;
-    noBtn.parentNode.appendChild(cheatMessage);
-  }
-}
+    // روی موبایل: قبل از اینکه کلیک ثبت بشه، فرار کن
+    noBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      moveNoButton();
+    }, { passive: false });
 
-// با موس
-noBtn.addEventListener('mouseenter', moveNoButton);
+    // اگه به هر شکلی کلیک ثبت شد، جلوش رو بگیر
+    noBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      moveNoButton();
+    });
 
-// روی موبایل: قبل از اینکه کلیک ثبت بشه، فرار کن
-noBtn.addEventListener('touchstart', (e) => {
-  e.preventDefault();
-  moveNoButton();
-}, { passive: false });
-
-// اگه به هر شکلی کلیک ثبت شد، جلوش رو بگیر
-noBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  moveNoButton();
-});
-
-// اگه صفحه کوچیک/بزرگ شد، دکمه فراری رو دوباره جا بده
-window.addEventListener('resize', () => {
-  if (!noBtnIsFloating) return;
-  const btnW = noBtn.offsetWidth;
-  const btnH = noBtn.offsetHeight;
-  const padding = 20;
-  const maxX = window.innerWidth - btnW - padding;
-  const maxY = window.innerHeight - btnH - padding;
-  const curX = parseFloat(noBtn.style.left);
-  const curY = parseFloat(noBtn.style.top);
-  if (curX > maxX) noBtn.style.left = maxX + 'px';
-  if (curY > maxY) noBtn.style.top = maxY + 'px';
-});
-  </script> 
+    // اگه صفحه کوچیک/بزرگ شد، دکمه فراری رو دوباره جا بده
+    window.addEventListener('resize', () => {
+      if (!noBtnIsFloating) return;
+      const btnW = noBtn.offsetWidth;
+      const btnH = noBtn.offsetHeight;
+      const padding = 20;
+      const maxX = window.innerWidth - btnW - padding;
+      const maxY = window.innerHeight - btnH - padding;
+      const curX = parseFloat(noBtn.style.left);
+      const curY = parseFloat(noBtn.style.top);
+      if (curX > maxX) noBtn.style.left = maxX + 'px';
+      if (curY > maxY) noBtn.style.top = maxY + 'px';
+    });
+  </script>
 </body>
 </html>
-
-
-
-
