@@ -436,15 +436,12 @@
     // ---------- دکمه فراری «نه» ----------
     const noBtn = document.getElementById('btn-no');
     let noBtnIsFloating = false;
-    let noMoveCount = 0;
     let lastMoveTime = 0;
-    let cheatMessage = null;
 
     function moveNoButton() {
       const now = Date.now();
       if (now - lastMoveTime < 80) return; // ضد فلیکر
       lastMoveTime = now;
-      noMoveCount++;
 
       // اولین بار: دکمه رو از گرید جدا کن و به صفحه بچسبون
       if (!noBtnIsFloating) {
@@ -488,14 +485,6 @@
       noBtn.style.left = randomX + 'px';
       noBtn.style.top = randomY + 'px';
       noBtn.style.transform = `rotate(${(Math.random() - 0.5) * 20}deg)`;
-
-      // بعد از ۳ بار فرار، یه پیام بامزه نشون بده
-      if (noMoveCount === 3 && !cheatMessage) {
-        cheatMessage = document.createElement('p');
-        cheatMessage.style.cssText = 'text-align:center; color:#8d6e63; font-size:0.85rem; margin-top:1rem; animation: fadeIn 0.4s ease;';
-        cheatMessage.textContent = '';
-        noBtn.parentNode.appendChild(cheatMessage);
-      }
     }
 
     // با موس
