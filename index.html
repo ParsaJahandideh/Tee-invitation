@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { overflow-x: hidden; }
   body {
     font-family: 'Vazirmatn', tahoma, sans-serif;
     margin: 0;
@@ -28,7 +29,7 @@
   }
   h1 { font-size: 1.5rem; text-align: center; margin: 0 0 0.5rem; line-height: 1.7; }
   h2 { font-size: 1.2rem; text-align: center; margin: 0 0 1.25rem; }
-  p { line-height: 1.8; text-align: center; }
+  p { line-height: 1.8; text-align: center; margin: 0.5em 0; }
 
   .btn {
     display: inline-block;
@@ -50,7 +51,7 @@
     background: #efebe9;
     color: #6d4c41;
   }
-  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn:disabled { cursor: not-allowed; }
 
   .choice-buttons {
     display: grid;
@@ -286,10 +287,8 @@
       window.scrollTo(0, 0);
     }
 
-    // صفحه اول: فقط دکمه «آره» فعاله
     document.getElementById('btn-yes').addEventListener('click', () => showScreen('screen-details'));
 
-    // انتخاب چیپ‌ها
     function setupChips(containerId, key) {
       const container = document.getElementById(containerId);
       container.addEventListener('click', (e) => {
@@ -304,7 +303,6 @@
     setupChips('dayChips', 'day');
     setupChips('drinkChips', 'drink');
 
-    // صبح / عصر
     document.querySelectorAll('.ampm-toggle button').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.ampm-toggle button').forEach(b => b.classList.remove('active'));
@@ -314,7 +312,6 @@
       });
     });
 
-    // ساعت
     const clock = document.getElementById('clock');
     const hourHand = document.getElementById('hourHand');
     const minuteHand = document.getElementById('minuteHand');
@@ -379,7 +376,6 @@
       const distance = Math.sqrt((e.clientX - cx) ** 2 + (e.clientY - cy) ** 2);
       const clockRadius = rect.width / 2;
 
-      // ناحیه داخلی = عقربه ساعت، ناحیه بیرونی = عقربه دقیقه
       activeHand = distance < clockRadius * 0.55 ? 'hour' : 'minute';
 
       clock.setPointerCapture(e.pointerId);
@@ -398,7 +394,6 @@
 
     updateClock();
 
-    // ثبت نهایی
     document.getElementById('btn-submit').addEventListener('click', () => {
       if (!state.day) { alert('لطفاً یه روز رو انتخاب کن'); return; }
       if (!state.drink) { alert('لطفاً یه نوشیدنی رو انتخاب کن'); return; }
@@ -440,16 +435,18 @@
 
     function moveNoButton() {
       const now = Date.now();
-      if (now - lastMoveTime < 80) return; // ضد فلیکر
+      if (now - lastMoveTime < 80) return;
       lastMoveTime = now;
 
-      // اولین بار: دکمه رو از گرید جدا کن و به صفحه بچسبون
       if (!noBtnIsFloating) {
         const rect = noBtn.getBoundingClientRect();
 
-        const placeholder = document.createElement('div');
-        placeholder.style.width = rect.width + 'px';
-        placeholder.style.height = rect.height + 'px';
+        // ساخت placeholder با کلون خود دکمه تا اندازه‌ش دقیقاً یکی باشه
+        const placeholder = noBtn.cloneNode(true);
+        placeholder.removeAttribute('id');
+        placeholder.disabled = true;
+        placeholder.style.visibility = 'hidden';
+        placeholder.style.pointerEvents = 'none';
         noBtn.parentNode.insertBefore(placeholder, noBtn);
 
         noBtn.style.position = 'fixed';
@@ -469,7 +466,6 @@
       const maxX = Math.max(padding, window.innerWidth - btnW - padding);
       const maxY = Math.max(padding, window.innerHeight - btnH - padding);
 
-      // یه نقطه تصادفی که از وسط صفحه (دکمه آره) دور باشه
       const centerX = window.innerWidth / 2;
       const centerY = window.innerHeight / 2;
       let randomX, randomY, tries = 0;
@@ -487,23 +483,19 @@
       noBtn.style.transform = `rotate(${(Math.random() - 0.5) * 20}deg)`;
     }
 
-    // با موس
     noBtn.addEventListener('mouseenter', moveNoButton);
 
-    // روی موبایل: قبل از اینکه کلیک ثبت بشه، فرار کن
     noBtn.addEventListener('touchstart', (e) => {
       e.preventDefault();
       moveNoButton();
     }, { passive: false });
 
-    // اگه به هر شکلی کلیک ثبت شد، جلوش رو بگیر
     noBtn.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
       moveNoButton();
     });
 
-    // اگه صفحه کوچیک/بزرگ شد، دکمه فراری رو دوباره جا بده
     window.addEventListener('resize', () => {
       if (!noBtnIsFloating) return;
       const btnW = noBtn.offsetWidth;
