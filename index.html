@@ -12,18 +12,18 @@
     font-family: 'Vazirmatn', tahoma, sans-serif;
     margin: 0;
     min-height: 100vh;
-    background: linear-gradient(135deg, #f4f1ea 0%, #e8e0d5 100%);
+    background: linear-gradient(135deg, #f4f1ea 0%, #e0dccf 100%);
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 16px;
-    color: #4a3b32;
+    color: #1f2d3d;
   }
   .card {
-    background: #fffdf9;
+    background: #ffffff;
     padding: 2rem 1.5rem;
     border-radius: 24px;
-    box-shadow: 0 20px 40px rgba(109, 76, 65, 0.12);
+    box-shadow: 0 20px 40px rgba(31, 45, 61, 0.12);
     width: 100%;
     max-width: 440px;
   }
@@ -43,13 +43,13 @@
   }
   .btn:active { transform: scale(0.97); }
   .btn-primary {
-    background: linear-gradient(135deg, #8d6e63, #6d4c41);
+    background: linear-gradient(135deg, #3d5a80, #2a3f5c);
     color: #fff;
-    box-shadow: 0 6px 16px rgba(109, 76, 65, 0.3);
+    box-shadow: 0 6px 16px rgba(61, 90, 128, 0.3);
   }
   .btn-secondary {
-    background: #efebe9;
-    color: #6d4c41;
+    background: #e6ecf0;
+    color: #2a3f5c;
   }
   .btn:disabled { cursor: not-allowed; }
 
@@ -70,19 +70,19 @@
   }
   .chip {
     padding: 10px 16px;
-    border: 2px solid #d7ccc8;
+    border: 2px solid #c5cfd8;
     background: #fff;
     border-radius: 999px;
     font-family: inherit;
     font-size: 0.95rem;
-    color: #6d4c41;
+    color: #2a3f5c;
     cursor: pointer;
     transition: all 0.15s;
   }
   .chip:active { transform: scale(0.95); }
   .chip.selected {
-    background: #8d6e63;
-    border-color: #8d6e63;
+    background: #3d5a80;
+    border-color: #3d5a80;
     color: #fff;
   }
 
@@ -92,7 +92,7 @@
     font-weight: 700;
     margin-bottom: 0.5rem;
     text-align: center;
-    color: #6d4c41;
+    color: #2a3f5c;
   }
 
   .clock-container {
@@ -106,18 +106,18 @@
     height: 260px;
     touch-action: none;
     user-select: none;
-    filter: drop-shadow(0 8px 20px rgba(109, 76, 65, 0.15));
+    filter: drop-shadow(0 8px 20px rgba(31, 45, 61, 0.15));
   }
   .digital-time {
     font-size: 1.6rem;
     font-weight: 700;
-    color: #4a3b32;
+    color: #1f2d3d;
     font-family: 'Vazirmatn', tahoma, sans-serif;
     letter-spacing: 1px;
   }
   .ampm-toggle {
     display: flex;
-    background: #efebe9;
+    background: #e6ecf0;
     border-radius: 999px;
     padding: 4px;
     gap: 2px;
@@ -129,18 +129,18 @@
     border-radius: 999px;
     font-family: inherit;
     font-size: 0.9rem;
-    color: #8d6e63;
+    color: #3d5a80;
     cursor: pointer;
     transition: all 0.2s;
   }
   .ampm-toggle button.active {
-    background: #8d6e63;
+    background: #3d5a80;
     color: #fff;
   }
 
   .summary {
     text-align: center;
-    color: #8d6e63;
+    color: #3d5a80;
     font-size: 0.9rem;
     min-height: 1.4rem;
     margin-bottom: 1rem;
@@ -172,23 +172,23 @@
     <div class="screen active" id="screen-invite">
       <div style="font-size: 3rem; text-align: center; margin-bottom: 0.5rem;">☕</div>
       <h1>میتونم به یه نوشیدنی دعوتت کنم؟</h1>
-      <p style="color: #8d6e63; font-size: 0.9rem;">یه چای شایدم یه قهوه؟...</p>
+      <p style="color: #3d5a80; font-size: 0.9rem;">یه قهوه، یه چای، یه گپ خوب...</p>
       <div class="choice-buttons">
-        <button class="btn btn-primary" id="btn-yes"> آره شاید</button>
+        <button class="btn btn-primary" id="btn-yes">شاید آره</button>
         <button class="btn btn-secondary" id="btn-no">نه :(</button>
       </div>
     </div>
 
     <!-- صفحه نه -->
     <div class="screen" id="screen-no">
-      <div style="font-size: 3rem; text-align: center; margin-bottom: 1rem;"></div>
+      <div style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">💛</div>
       <h2>اشکالی نداره</h2>
-      <p style="color: #8d6e63;">مرسی که جواب دادی!</p>
+      <p style="color: #3d5a80;">مرسی که جواب دادی!</p>
     </div>
 
     <!-- صفحه ۲: جزئیات -->
     <div class="screen" id="screen-details">
-      <h2>عالیه! </h2>
+      <h2>عالیه! چه روزی بهتره؟</h2>
 
       <div class="step">
         <label class="step-label">چه روزی می‌تونی؟</label>
@@ -215,15 +215,15 @@
         <label class="step-label">چه ساعتی؟ (عقربه‌ها رو بکش)</label>
         <div class="clock-container">
           <svg class="clock" id="clock" viewBox="0 0 220 220">
-            <circle cx="110" cy="110" r="105" fill="#fffdf9" stroke="#d7ccc8" stroke-width="2"/>
-            <circle cx="110" cy="110" r="65" fill="none" stroke="#f4f1ea" stroke-width="1" stroke-dasharray="3 4"/>
-            <g stroke="#d7ccc8" stroke-width="2">
+            <circle cx="110" cy="110" r="105" fill="#ffffff" stroke="#c5cfd8" stroke-width="2"/>
+            <circle cx="110" cy="110" r="65" fill="none" stroke="#f0f3f7" stroke-width="1" stroke-dasharray="3 4"/>
+            <g stroke="#c5cfd8" stroke-width="2">
               <line x1="110" y1="10" x2="110" y2="20"/>
               <line x1="210" y1="110" x2="200" y2="110"/>
               <line x1="110" y1="210" x2="110" y2="200"/>
               <line x1="10" y1="110" x2="20" y2="110"/>
             </g>
-            <g font-family="Vazirmatn, tahoma, sans-serif" font-size="14" fill="#8d6e63" text-anchor="middle" dominant-baseline="middle" font-weight="700">
+            <g font-family="Vazirmatn, tahoma, sans-serif" font-size="14" fill="#3d5a80" text-anchor="middle" dominant-baseline="middle" font-weight="700">
               <text x="110" y="32">۱۲</text>
               <text x="149" y="42">۱</text>
               <text x="178" y="71">۲</text>
@@ -238,15 +238,15 @@
               <text x="71" y="42">۱۱</text>
             </g>
             <g id="hourHand">
-              <line x1="110" y1="110" x2="110" y2="55" stroke="#4a3b32" stroke-width="8" stroke-linecap="round"/>
-              <circle cx="110" cy="55" r="6" fill="#4a3b32"/>
+              <line x1="110" y1="110" x2="110" y2="55" stroke="#1f2d3d" stroke-width="8" stroke-linecap="round"/>
+              <circle cx="110" cy="55" r="6" fill="#1f2d3d"/>
             </g>
             <g id="minuteHand">
-              <line x1="110" y1="110" x2="110" y2="30" stroke="#8d6e63" stroke-width="5" stroke-linecap="round"/>
-              <circle cx="110" cy="30" r="5" fill="#8d6e63"/>
+              <line x1="110" y1="110" x2="110" y2="30" stroke="#3d5a80" stroke-width="5" stroke-linecap="round"/>
+              <circle cx="110" cy="30" r="5" fill="#3d5a80"/>
             </g>
-            <circle cx="110" cy="110" r="10" fill="#4a3b32"/>
-            <circle cx="110" cy="110" r="4" fill="#fffdf9"/>
+            <circle cx="110" cy="110" r="10" fill="#1f2d3d"/>
+            <circle cx="110" cy="110" r="4" fill="#ffffff"/>
           </svg>
 
           <div class="digital-time" id="digitalTime">۴:۰۰ عصر</div>
@@ -264,9 +264,9 @@
 
     <!-- صفحه ۳: موفقیت -->
     <div class="screen" id="screen-success">
-      <div class="success-icon"></div>
+      <div class="success-icon">💛</div>
       <h2>ممنون از اینکه دعوتم رو قبول کردی!</h2>
-      <p style="color: #8d6e63;"></p>
+      <p style="color: #3d5a80;">منتظرتم...</p>
     </div>
   </div>
 
@@ -424,7 +424,7 @@
         console.error(err);
         alert('خطا در ارسال. لطفاً دوباره تلاش کن.');
         btn.disabled = false;
-        btn.textContent = 'تایید';
+        btn.textContent = 'ثبت کن';
       });
     });
 
@@ -441,7 +441,6 @@
       if (!noBtnIsFloating) {
         const rect = noBtn.getBoundingClientRect();
 
-        // ساخت placeholder با کلون خود دکمه تا اندازه‌ش دقیقاً یکی باشه
         const placeholder = noBtn.cloneNode(true);
         placeholder.removeAttribute('id');
         placeholder.disabled = true;
