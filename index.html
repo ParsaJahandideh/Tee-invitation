@@ -78,6 +78,8 @@
     color: #6d4c41;
     cursor: pointer;
     transition: all 0.15s;
+    -webkit-user-select: none;
+    user-select: none;
   }
   .chip:active { transform: scale(0.95); }
   .chip.selected {
@@ -174,8 +176,8 @@
       <h1>میتونم به یه نوشیدنی دعوتت کنم؟</h1>
       <p style="color: #8d6e63; font-size: 0.9rem;">شاید یه چای یا قهوه...</p>
       <div class="choice-buttons">
-        <button class="btn btn-primary" id="btn-yes">آره</button>
-        <button class="btn btn-secondary" id="btn-no">نه :(</button>
+        <button class="btn btn-primary" id="btn-yes" type="button">آره</button>
+        <button class="btn btn-secondary" id="btn-no" type="button">نه :(</button>
       </div>
     </div>
 
@@ -193,21 +195,21 @@
       <div class="step">
         <label class="step-label">چه روزی وقت داری؟ </label>
         <div class="chips" id="dayChips">
-          <button class="chip" data-value="شنبه">شنبه</button>
-          <button class="chip" data-value="یکشنبه">یکشنبه</button>
-          <button class="chip" data-value="دوشنبه">دوشنبه</button>
-          <button class="chip" data-value="سه‌شنبه">سه‌شنبه</button>
-          <button class="chip" data-value="چهارشنبه">چهارشنبه</button>
-          <button class="chip" data-value="پنجشنبه">پنجشنبه</button>
-          <button class="chip" data-value="جمعه">جمعه</button>
+          <button type="button" class="chip" data-value="شنبه">شنبه</button>
+          <button type="button" class="chip" data-value="یکشنبه">یکشنبه</button>
+          <button type="button" class="chip" data-value="دوشنبه">دوشنبه</button>
+          <button type="button" class="chip" data-value="سه‌شنبه">سه‌شنبه</button>
+          <button type="button" class="chip" data-value="چهارشنبه">چهارشنبه</button>
+          <button type="button" class="chip" data-value="پنجشنبه">پنجشنبه</button>
+          <button type="button" class="chip" data-value="جمعه">جمعه</button>
         </div>
       </div>
 
       <div class="step">
         <label class="step-label">چای یا قهوه؟ (هر دو هم می‌تونی انتخاب کنی)</label>
         <div class="chips" id="drinkChips">
-          <button class="chip" data-value="چای">🍵 چای</button>
-          <button class="chip" data-value="قهوه">☕ قهوه</button>
+          <button type="button" class="chip" data-value="چای">🍵 چای</button>
+          <button type="button" class="chip" data-value="قهوه">☕ قهوه</button>
         </div>
       </div>
 
@@ -252,14 +254,14 @@
           <div class="digital-time" id="digitalTime">۴:۰۰ عصر</div>
 
           <div class="ampm-toggle">
-            <button data-period="صبح">صبح ☀️</button>
-            <button data-period="عصر" class="active">عصر 🌙</button>
+            <button type="button" data-period="صبح">صبح ☀️</button>
+            <button type="button" data-period="عصر" class="active">عصر 🌙</button>
           </div>
         </div>
       </div>
 
       <div class="summary" id="summary"></div>
-      <button class="btn btn-primary" id="btn-submit" style="width: 100%;">ثبت کن</button>
+      <button class="btn btn-primary" id="btn-submit" type="button" style="width: 100%;">ثبت کن</button>
     </div>
 
     <!-- صفحه ۳: موفقیت -->
@@ -274,8 +276,8 @@
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzHzmbEJCB2WD_td28GPX3lpDKSG9u3lQsyTBtVf0-jEoBz5tbto6YU3GD_WxvbKG11/exec';
 
     const state = {
-      days: [],      // چند انتخابی
-      drinks: [],    // ← حالا آرایه (هم چای هم قهوه)
+      days: [],
+      drinks: [],
       hour: 4,
       minute: 0,
       period: 'عصر'
@@ -289,29 +291,53 @@
 
     document.getElementById('btn-yes').addEventListener('click', () => showScreen('screen-details'));
 
-    // انتخاب چندتایی (هم برای روزها، هم برای نوشیدنی)
+    // ──────────── انتخاب چندتایی با بایند مستقیم (مطمئن‌ترین روش) ────────────
     function setupMultiChips(containerId, key) {
       const container = document.getElementById(containerId);
-      const order = [...container.querySelectorAll('.chip')].map(c => c.dataset.value);
+      if (!container) {
+        console.error('setupMultiChips: کانتینر پیدا نشد →', containerId);
+        return;
+      }
 
-      container.addEventListener('click', (e) => {
-        const chip = e.target.closest('.chip');
-        if (!chip) return;
-        chip.classList.toggle('selected');
-        const value = chip.dataset.value;
-        const arr = state[key];
-        const idx = arr.indexOf(value);
-        if (idx === -1) arr.push(value);
-        else arr.splice(idx, 1);
-        // مرتب نگه‌داشتن بر اساس ترتیب چیپ‌ها
-        arr.sort((a, b) => order.indexOf(a) - order.indexOf(b));
-        updateSummary();
+      const chips = Array.from(container.querySelectorAll('.chip'));
+      if (!chips.length) {
+        console.error('setupMultiChips: هیچ چیپی توی', containerId, 'پیدا نشد');
+        return;
+      }
+
+      // ترتیب اصلی برای مرتب نگه‌داشتن
+      const order = chips.map(c => c.getAttribute('data-value'));
+
+      chips.forEach(chip => {
+        chip.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          // toggle ظاهر
+          this.classList.toggle('selected');
+
+          // ★ state رو مستقیم از DOM می‌سازیم → هیچ‌وقت با ظاهر ناهم‌خوان نمی‌شه
+          const selected = [];
+          container.querySelectorAll('.chip').forEach(c => {
+            if (c.classList.contains('selected')) {
+              const v = c.getAttribute('data-value');
+              if (v) selected.push(v);
+            }
+          });
+
+          // مرتب‌سازی بر اساس ترتیب اصلی چیپ‌ها
+          selected.sort((a, b) => order.indexOf(a) - order.indexOf(b));
+
+          state[key] = selected;
+          updateSummary();
+        });
       });
     }
 
-    setupMultiChips('dayChips', 'days');     // روزها multi
-    setupMultiChips('drinkChips', 'drinks'); // ← نوشیدنی هم multi
+    setupMultiChips('dayChips', 'days');
+    setupMultiChips('drinkChips', 'drinks');
 
+    // ──────────── Am/Pm ────────────
     document.querySelectorAll('.ampm-toggle button').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.ampm-toggle button').forEach(b => b.classList.remove('active'));
@@ -321,6 +347,7 @@
       });
     });
 
+    // ──────────── ساعت ────────────
     const clock = document.getElementById('clock');
     const hourHand = document.getElementById('hourHand');
     const minuteHand = document.getElementById('minuteHand');
@@ -350,8 +377,8 @@
       if (state.drinks.length) parts.push('☕ ' + state.drinks.join('، '));
       const h = state.hour === 0 ? 12 : state.hour;
       parts.push(`🕐 ${toPersianNum(h)}:${toPersianNum(String(state.minute).padStart(2, '0'))} ${state.period}`);
-      const el = document.getElementById('summary');
-      el.textContent = parts.length > 1 ? parts.join('  •  ') : '';
+      document.getElementById('summary').textContent =
+        parts.length > 1 ? parts.join('  •  ') : '';
     }
 
     function getAngleFromEvent(e) {
@@ -403,6 +430,7 @@
 
     updateClock();
 
+    // ──────────── ثبت ────────────
     document.getElementById('btn-submit').addEventListener('click', () => {
       if (!state.days.length) { alert('لطفاً حداقل یه روز رو انتخاب کن'); return; }
       if (!state.drinks.length) { alert('لطفاً حداقل یه نوشیدنی رو انتخاب کن'); return; }
@@ -411,7 +439,7 @@
       const timeStr = `${h}:${String(state.minute).padStart(2, '0')} ${state.period}`;
 
       const data = {
-        drink: state.drinks.join('، '),   // ← «چای، قهوه» یا هرکدوم تنها
+        drink: state.drinks.join('، '),
         time: timeStr,
         day: state.days.join('، ')
       };
@@ -437,7 +465,7 @@
       });
     });
 
-    // ---------- دکمه فراری «نه» ----------
+    // ──────────── دکمه فراری «نه» ────────────
     const noBtn = document.getElementById('btn-no');
     let noBtnIsFloating = false;
     let lastMoveTime = 0;
