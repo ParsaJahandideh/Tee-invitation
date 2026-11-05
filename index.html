@@ -172,9 +172,9 @@
     <div class="screen active" id="screen-invite">
       <div style="font-size: 3rem; text-align: center; margin-bottom: 0.5rem;">☕</div>
       <h1>میتونم به یه نوشیدنی دعوتت کنم؟</h1>
-      <p style="color: #8d6e63; font-size: 0.9rem;">یه قهوه، یه چای، یه گپ خوب...</p>
+      <p style="color: #8d6e63; font-size: 0.9rem;">شاید یه چای یا قهوه...</p>
       <div class="choice-buttons">
-        <button class="btn btn-primary" id="btn-yes">شاید آره</button>
+        <button class="btn btn-primary" id="btn-yes">آره</button>
         <button class="btn btn-secondary" id="btn-no">نه :(</button>
       </div>
     </div>
@@ -188,10 +188,10 @@
 
     <!-- صفحه ۲: جزئیات -->
     <div class="screen" id="screen-details">
-      <h2>عالیه! چه روزی بهتره؟</h2>
+      <h2> ;) </h2>
 
       <div class="step">
-        <label class="step-label">چه روزی می‌تونی؟</label>
+        <label class="step-label">چه روزی می‌تونی؟ (چندتا هم می‌تونی انتخاب کنی)</label>
         <div class="chips" id="dayChips">
           <button class="chip" data-value="شنبه">شنبه</button>
           <button class="chip" data-value="یکشنبه">یکشنبه</button>
@@ -274,7 +274,7 @@
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzHzmbEJCB2WD_td28GPX3lpDKSG9u3lQsyTBtVf0-jEoBz5tbto6YU3GD_WxvbKG11/exec';
 
     const state = {
-      day: null,
+      days: [],      // ← حالا آرایه‌ست
       drink: null,
       hour: 4,
       minute: 0,
@@ -289,6 +289,7 @@
 
     document.getElementById('btn-yes').addEventListener('click', () => showScreen('screen-details'));
 
+    // انتخاب تکی (برای نوشیدنی)
     function setupChips(containerId, key) {
       const container = document.getElementById(containerId);
       container.addEventListener('click', (e) => {
@@ -300,8 +301,29 @@
         updateSummary();
       });
     }
-    setupChips('dayChips', 'day');
-    setupChips('drinkChips', 'drink');
+
+    // انتخاب چندتایی (برای روزها)
+    function setupMultiChips(containerId, key) {
+      const container = document.getElementById(containerId);
+      const order = [...container.querySelectorAll('.chip')].map(c => c.dataset.value);
+
+      container.addEventListener('click', (e) => {
+        const chip = e.target.closest('.chip');
+        if (!chip) return;
+        chip.classList.toggle('selected');
+        const value = chip.dataset.value;
+        const arr = state[key];
+        const idx = arr.indexOf(value);
+        if (idx === -1) arr.push(value);
+        else arr.splice(idx, 1);
+        // مرتب نگه‌داشتن بر اساس ترتیب چیپ‌ها
+        arr.sort((a, b) => order.indexOf(a) - order.indexOf(b));
+        updateSummary();
+      });
+    }
+
+    setupMultiChips('dayChips', 'days');   // ← روزها multi
+    setupChips('drinkChips', 'drink');     // ← نوشیدنی single
 
     document.querySelectorAll('.ampm-toggle button').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -337,7 +359,7 @@
 
     function updateSummary() {
       const parts = [];
-      if (state.day) parts.push('📅 ' + state.day);
+      if (state.days.length) parts.push('📅 ' + state.days.join('، '));
       if (state.drink) parts.push('☕ ' + state.drink);
       const h = state.hour === 0 ? 12 : state.hour;
       parts.push(`🕐 ${toPersianNum(h)}:${toPersianNum(String(state.minute).padStart(2, '0'))} ${state.period}`);
@@ -395,7 +417,7 @@
     updateClock();
 
     document.getElementById('btn-submit').addEventListener('click', () => {
-      if (!state.day) { alert('لطفاً یه روز رو انتخاب کن'); return; }
+      if (!state.days.length) { alert('لطفاً حداقل یه روز رو انتخاب کن'); return; }
       if (!state.drink) { alert('لطفاً یه نوشیدنی رو انتخاب کن'); return; }
 
       const h = state.hour === 0 ? 12 : state.hour;
@@ -404,7 +426,7 @@
       const data = {
         drink: state.drink,
         time: timeStr,
-        day: state.day
+        day: state.days.join('، ')   // ← همه روزها با «،» به هم چسبیده
       };
 
       const btn = document.getElementById('btn-submit');
@@ -441,7 +463,6 @@
       if (!noBtnIsFloating) {
         const rect = noBtn.getBoundingClientRect();
 
-        // ساخت placeholder با کلون خود دکمه تا اندازه‌ش دقیقاً یکی باشه
         const placeholder = noBtn.cloneNode(true);
         placeholder.removeAttribute('id');
         placeholder.disabled = true;
