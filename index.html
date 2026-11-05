@@ -86,6 +86,7 @@
     background: #8d6e63;
     border-color: #8d6e63;
     color: #fff;
+    box-shadow: 0 0 0 2px rgba(209, 138, 58, 0.4);
   }
 
   .step { margin-bottom: 1.5rem; }
@@ -166,6 +167,18 @@
     from { opacity: 0; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }
   }
+
+  /* ---------- تم ظریف FJ Cruiser ---------- */
+  .fj-hero {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+  }
+  .fj-icon {
+    width: 110px;
+    height: auto;
+    filter: drop-shadow(0 4px 10px rgba(109, 76, 65, 0.12));
+  }
 </style>
 </head>
 <body>
@@ -190,6 +203,23 @@
 
     <!-- صفحه ۲: جزئیات -->
     <div class="screen" id="screen-details">
+      <div class="fj-hero">
+        <svg class="fj-icon" viewBox="0 0 120 64" aria-hidden="true">
+          <rect x="22" y="7" width="76" height="17" rx="4"
+                fill="#fbfaf7" stroke="#c9b8ac" stroke-width="1.5"/>
+          <rect x="14" y="23" width="92" height="28" rx="5" fill="#8d6e63"/>
+          <rect x="30" y="26" width="60" height="10" rx="2.5"
+                fill="#a1887f" opacity="0.5"/>
+          <circle cx="28" cy="42" r="7" fill="#fbfaf7" stroke="#4a3b32" stroke-width="2"/>
+          <circle cx="92" cy="42" r="7" fill="#fbfaf7" stroke="#4a3b32" stroke-width="2"/>
+          <circle cx="28" cy="42" r="2.5" fill="#d18a3a"/>
+          <circle cx="92" cy="42" r="2.5" fill="#d18a3a"/>
+          <rect x="46" y="39" width="28" height="2" rx="1" fill="#4a3b32" opacity="0.4"/>
+          <rect x="46" y="45" width="28" height="2" rx="1" fill="#4a3b32" opacity="0.4"/>
+          <rect x="12" y="51" width="96" height="6" rx="3" fill="#6d4c41"/>
+        </svg>
+      </div>
+
       <h2> ;) </h2>
 
       <div class="step">
@@ -291,32 +321,19 @@
 
     document.getElementById('btn-yes').addEventListener('click', () => showScreen('screen-details'));
 
-    // ──────────── انتخاب چندتایی با بایند مستقیم (مطمئن‌ترین روش) ────────────
+    // ──────────── انتخاب چندتایی ────────────
     function setupMultiChips(containerId, key) {
       const container = document.getElementById(containerId);
-      if (!container) {
-        console.error('setupMultiChips: کانتینر پیدا نشد →', containerId);
-        return;
-      }
-
+      if (!container) return;
       const chips = Array.from(container.querySelectorAll('.chip'));
-      if (!chips.length) {
-        console.error('setupMultiChips: هیچ چیپی توی', containerId, 'پیدا نشد');
-        return;
-      }
-
-      // ترتیب اصلی برای مرتب نگه‌داشتن
       const order = chips.map(c => c.getAttribute('data-value'));
 
       chips.forEach(chip => {
         chip.addEventListener('click', function (e) {
           e.preventDefault();
           e.stopPropagation();
-
-          // toggle ظاهر
           this.classList.toggle('selected');
 
-          // ★ state رو مستقیم از DOM می‌سازیم → هیچ‌وقت با ظاهر ناهم‌خوان نمی‌شه
           const selected = [];
           container.querySelectorAll('.chip').forEach(c => {
             if (c.classList.contains('selected')) {
@@ -324,10 +341,7 @@
               if (v) selected.push(v);
             }
           });
-
-          // مرتب‌سازی بر اساس ترتیب اصلی چیپ‌ها
           selected.sort((a, b) => order.indexOf(a) - order.indexOf(b));
-
           state[key] = selected;
           updateSummary();
         });
@@ -411,9 +425,7 @@
       const cy = rect.top + rect.height / 2;
       const distance = Math.sqrt((e.clientX - cx) ** 2 + (e.clientY - cy) ** 2);
       const clockRadius = rect.width / 2;
-
       activeHand = distance < clockRadius * 0.55 ? 'hour' : 'minute';
-
       clock.setPointerCapture(e.pointerId);
       setHandFromAngle(getAngleFromEvent(e));
     });
@@ -430,7 +442,7 @@
 
     updateClock();
 
-    // ──────────── ثبت ────────────
+    // ──────────── ثبت «آره» ────────────
     document.getElementById('btn-submit').addEventListener('click', () => {
       if (!state.days.length) { alert('لطفاً حداقل یه روز رو انتخاب کن'); return; }
       if (!state.drinks.length) { alert('لطفاً حداقل یه نوشیدنی رو انتخاب کن'); return; }
@@ -439,6 +451,7 @@
       const timeStr = `${h}:${String(state.minute).padStart(2, '0')} ${state.period}`;
 
       const data = {
+        answer: 'آره',
         drink: state.drinks.join('، '),
         time: timeStr,
         day: state.days.join('، ')
@@ -454,9 +467,7 @@
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(data)
       })
-      .then(() => {
-        showScreen('screen-success');
-      })
+      .then(() => showScreen('screen-success'))
       .catch((err) => {
         console.error(err);
         alert('خطا در ارسال. لطفاً دوباره تلاش کن.');
@@ -465,16 +476,47 @@
       });
     });
 
-    // ──────────── دکمه فراری «نه» ────────────
+    // ──────────── دکمه فراری «نه» با شمارش ────────────
     const noBtn = document.getElementById('btn-no');
+    const MAX_NO_ATTEMPTS = 3;   // ۳ بار فرار، بار چهارم واقعی
+    let noAttempts = 0;
     let noBtnIsFloating = false;
-    let lastMoveTime = 0;
+    let lastFleeTime = 0;
+
+    function canFlee() {
+      return noAttempts < MAX_NO_ATTEMPTS;
+    }
+
+    // فرار + شمارش (با debounce 100ms تا دوبار شمرده نشه)
+    function attemptFlee() {
+      const now = Date.now();
+      if (now - lastFleeTime < 100) return false;
+      lastFleeTime = now;
+      noAttempts++;
+      moveNoButton();
+      return true;
+    }
+
+    // ارسال «نه» به گوگل‌شیت و نمایش صفحه نه
+    function executeFinalNo() {
+      const data = {
+        answer: 'نه',
+        drink: 'نه ❌',
+        time: '-',
+        day: '-'
+      };
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(data)
+      }).catch(err => console.error('خطا در ارسال «نه»:', err));
+
+      showScreen('screen-no');
+    }
 
     function moveNoButton() {
-      const now = Date.now();
-      if (now - lastMoveTime < 80) return;
-      lastMoveTime = now;
-
       if (!noBtnIsFloating) {
         const rect = noBtn.getBoundingClientRect();
 
@@ -519,17 +561,29 @@
       noBtn.style.transform = `rotate(${(Math.random() - 0.5) * 20}deg)`;
     }
 
-    noBtn.addEventListener('mouseenter', moveNoButton);
+    // دسکتاپ: هر بار موس روی دکمه می‌ره، فرار می‌کنه (تا سقف ۳ بار)
+    noBtn.addEventListener('mouseenter', () => {
+      if (!canFlee()) return;
+      attemptFlee();
+    });
 
+    // موبایل: هر تپ یک تلاش (تا سقف ۳ بار)
     noBtn.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      moveNoButton();
+      if (!canFlee()) return; // بذار click طبیعی فایر بشه
+      e.preventDefault();     // جلوگیری از click برای تلاش‌های ۱ تا ۳
+      attemptFlee();
     }, { passive: false });
 
+    // کلیک: تا ۳ بار فرار، از بار ۴ به بعد «نه» واقعی
     noBtn.addEventListener('click', (e) => {
+      if (!canFlee()) {
+        e.preventDefault();
+        executeFinalNo();
+        return;
+      }
       e.preventDefault();
       e.stopPropagation();
-      moveNoButton();
+      attemptFlee();
     });
 
     window.addEventListener('resize', () => {
