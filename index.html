@@ -181,8 +181,8 @@
 
     <!-- صفحه نه -->
     <div class="screen" id="screen-no">
-      <div style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">💛</div>
-      <h2>اشکالی نداره</h2>
+      <div style="font-size: 3rem; text-align: center; margin-bottom: 1rem;"> </div>
+      <h2> </h2>
       <p style="color: #8d6e63;">مرسی که جواب دادی!</p>
     </div>
 
@@ -191,7 +191,7 @@
       <h2> ;) </h2>
 
       <div class="step">
-        <label class="step-label">چه روزی می‌تونی؟ (چندتا هم می‌تونی انتخاب کنی)</label>
+        <label class="step-label">چه روزی وقت داری؟ </label>
         <div class="chips" id="dayChips">
           <button class="chip" data-value="شنبه">شنبه</button>
           <button class="chip" data-value="یکشنبه">یکشنبه</button>
@@ -204,7 +204,7 @@
       </div>
 
       <div class="step">
-        <label class="step-label">چای یا قهوه؟</label>
+        <label class="step-label">چای یا قهوه؟ (هر دو هم می‌تونی انتخاب کنی)</label>
         <div class="chips" id="drinkChips">
           <button class="chip" data-value="چای">🍵 چای</button>
           <button class="chip" data-value="قهوه">☕ قهوه</button>
@@ -264,9 +264,9 @@
 
     <!-- صفحه ۳: موفقیت -->
     <div class="screen" id="screen-success">
-      <div class="success-icon">💛</div>
+      <div class="success-icon"> </div>
       <h2>ممنون از اینکه دعوتم رو قبول کردی!</h2>
-      <p style="color: #8d6e63;">منتظرتم...</p>
+      <p style="color: #8d6e63;">  </p>
     </div>
   </div>
 
@@ -274,8 +274,8 @@
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzHzmbEJCB2WD_td28GPX3lpDKSG9u3lQsyTBtVf0-jEoBz5tbto6YU3GD_WxvbKG11/exec';
 
     const state = {
-      days: [],      // ← حالا آرایه‌ست
-      drink: null,
+      days: [],      // چند انتخابی
+      drinks: [],    // ← حالا آرایه (هم چای هم قهوه)
       hour: 4,
       minute: 0,
       period: 'عصر'
@@ -289,20 +289,7 @@
 
     document.getElementById('btn-yes').addEventListener('click', () => showScreen('screen-details'));
 
-    // انتخاب تکی (برای نوشیدنی)
-    function setupChips(containerId, key) {
-      const container = document.getElementById(containerId);
-      container.addEventListener('click', (e) => {
-        const chip = e.target.closest('.chip');
-        if (!chip) return;
-        container.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
-        chip.classList.add('selected');
-        state[key] = chip.dataset.value;
-        updateSummary();
-      });
-    }
-
-    // انتخاب چندتایی (برای روزها)
+    // انتخاب چندتایی (هم برای روزها، هم برای نوشیدنی)
     function setupMultiChips(containerId, key) {
       const container = document.getElementById(containerId);
       const order = [...container.querySelectorAll('.chip')].map(c => c.dataset.value);
@@ -322,8 +309,8 @@
       });
     }
 
-    setupMultiChips('dayChips', 'days');   // ← روزها multi
-    setupChips('drinkChips', 'drink');     // ← نوشیدنی single
+    setupMultiChips('dayChips', 'days');     // روزها multi
+    setupMultiChips('drinkChips', 'drinks'); // ← نوشیدنی هم multi
 
     document.querySelectorAll('.ampm-toggle button').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -360,7 +347,7 @@
     function updateSummary() {
       const parts = [];
       if (state.days.length) parts.push('📅 ' + state.days.join('، '));
-      if (state.drink) parts.push('☕ ' + state.drink);
+      if (state.drinks.length) parts.push('☕ ' + state.drinks.join('، '));
       const h = state.hour === 0 ? 12 : state.hour;
       parts.push(`🕐 ${toPersianNum(h)}:${toPersianNum(String(state.minute).padStart(2, '0'))} ${state.period}`);
       const el = document.getElementById('summary');
@@ -418,15 +405,15 @@
 
     document.getElementById('btn-submit').addEventListener('click', () => {
       if (!state.days.length) { alert('لطفاً حداقل یه روز رو انتخاب کن'); return; }
-      if (!state.drink) { alert('لطفاً یه نوشیدنی رو انتخاب کن'); return; }
+      if (!state.drinks.length) { alert('لطفاً حداقل یه نوشیدنی رو انتخاب کن'); return; }
 
       const h = state.hour === 0 ? 12 : state.hour;
       const timeStr = `${h}:${String(state.minute).padStart(2, '0')} ${state.period}`;
 
       const data = {
-        drink: state.drink,
+        drink: state.drinks.join('، '),   // ← «چای، قهوه» یا هرکدوم تنها
         time: timeStr,
-        day: state.days.join('، ')   // ← همه روزها با «،» به هم چسبیده
+        day: state.days.join('، ')
       };
 
       const btn = document.getElementById('btn-submit');
